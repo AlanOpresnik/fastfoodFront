@@ -1,13 +1,35 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import toast from "react-hot-toast";
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+  const [userId, setUserId] = useState('');
+  const [cart, setCart] = useState([]);
+
+  const token = localStorage.getItem("token");
+
+  if (token !== undefined && token !== null && token !== "") {
+    useEffect(() => {
+      setUserId(jwtDecode(token));
+      console.log(jwtDecode(token));
+    }, [])
+  }
+
+  useEffect(() => {
+    if (userId && userId.userId) {
+      getUserCart();
+    }
+  }, []);
+
+
+
+
   const CreateUser = async (name, lastName, email, password) => {
     try {
       const res = await axios.post(
-        "https://fastfoodbackend-xyjo.onrender.com/api/auth/register",
+        import.meta.env.VITE_API_REGISTER,
         {
           name: name,
           lastName: lastName,
@@ -43,7 +65,7 @@ export const UserProvider = ({ children }) => {
   const LoginUser = async (email, password) => {
     try {
       const res = await axios.post(
-        "https://fastfoodbackend-xyjo.onrender.com/api/auth/login",
+        import.meta.env.VITE_API_LOGIN,
         {
           email: email,
           password: password,
@@ -71,11 +93,61 @@ export const UserProvider = ({ children }) => {
     await LoginUser(email, password);
   };
 
+  const getUserCart = async () => {
+    try {
+      const res = await axios.get(`https://zapatillasapi.site/api/auth/getUserById/${userId.userId}`)
+      setCart(res.data.cart)
+
+    }
+    catch (error) {
+      console.log(error)
+    }
+  };
+
+
+  const addToCart = async (id) => {
+
+    try {
+      const res = await axios.post(
+        import.meta.env.VITE_API_ADD_CART,
+        {
+          userId: userId.userId,
+          productId: id,
+          quantity: 1,
+        }
+      );
+      console.log(res);
+      await getUserCart()
+      if (res.status == 200) {
+        toast.success("Producto agregado al carrito");
+      }
+    }
+    catch (error) {
+      console.log(error)
+    }
+  }
+
+  const removeFromCart = async (id) => {
+
+    try {
+      const res = await axios.post(
+        import.meta.env.VITE_API_REMOVE_CART, {
+        userId: userId.userId,
+        productId: id,
+      }
+      );
+      await getUserCart()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
   return (
     <UserContext.Provider
-      value={{ LoginUser, handleLogin, CreateUser, handleRegister }}
+      value={{ LoginUser, handleLogin, CreateUser, handleRegister, getUserCart, cart, addToCart, userId, removeFromCart }}
     >
       {children}
     </UserContext.Provider>
   );
-};
+}

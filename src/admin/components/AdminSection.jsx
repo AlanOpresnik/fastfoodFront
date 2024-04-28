@@ -36,6 +36,7 @@ const AdminSection = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(formData)
     setFormData({
       ...formData,
       [name]: value,
@@ -91,9 +92,11 @@ const AdminSection = () => {
     for (let i = 0; i < fileInput.length; i++) {
       formDataToSend.append("images", fileInput[i]);
     }
+    
     try {
+      
       const res = await axios.post(
-        "https://fastfoodbackend-xyjo.onrender.com/api/products/postProduct",
+        "http://ec2-52-5-132-0.compute-1.amazonaws.com:3900/api/products/postProduct",
         formDataToSend
       );
       setFormData({

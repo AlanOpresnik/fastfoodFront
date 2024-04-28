@@ -15,6 +15,13 @@ import { UserProvider } from "./context/UserContext.jsx";
 import AdminSection from "./admin/components/AdminSection.jsx";
 import ProductCard from "./components/ProductsSection/ProductCard.jsx";
 import ProductCarrusel from "./components/ProductsSection/ProductCarrusel.jsx";
+import { ProductProvider } from "./context/ProductContext.jsx";
+import ProductSection from "./components/ProductsSection/ProductSection.jsx";
+import ProductDetail from "./components/ProductsSection/productDetail/ProductDetail.jsx";
+import DividerLooks from "./components/dividerLooks/DividerLooks.jsx";
+import PaymentSuccess from "./paymentSuccess/PaymentSuccess.jsx";
+import Cart from "./pages/Cart/Cart.jsx";
+import FinishForm from "./pages/Cart/FinishForm.jsx";
 
 const router = createHashRouter([
   {
@@ -23,35 +30,91 @@ const router = createHashRouter([
     element: (
       <>
         <UserProvider>
-          <Navbar />
-          <App />
-          <div className="max-w-[1550px] px-4 mx-auto">
-            <div className="mt-12 text-center p-4">
-              <h2 className="text-5xl md:text-7xl font-extrabold text-black text-center">
-                WIN ON AIR
-              </h2>
-              <p className="text-md md:text-lg">
-                Diseño avanzado que cumple con las especificaciones exactas de
-                los mejores atletas.
-              </p>
-              <Button
-                className="!rounded-full !mt-4 !bg-black !py-3 !px-6"
-                variant="contained"
-              >
-                Explora AIR
-              </Button>
+          <ProductProvider>
+            <Navbar />
+            <App />
+            <div className="max-w-[1550px] px-4 mx-auto">
+              <div className="mt-12 text-center p-4">
+                <h2 className="text-5xl md:text-7xl font-extrabold text-black text-center">
+                  WIN ON AIR
+                </h2>
+                <p className="text-md md:text-lg">
+                  Diseño avanzado que cumple con las especificaciones exactas de
+                  los mejores atletas.
+                </p>
+                <Button
+                  className="!rounded-full !mt-4 !bg-black !py-3 !px-6"
+                  variant="contained"
+                >
+                  Explora AIR
+                </Button>
+              </div>
+              <section>
+                <DividerTempo />
+              </section>
+              <section className="mt-12">
+                <DividerLorenzo />
+              </section>
             </div>
-            <section>
-              <DividerTempo />
-            </section>
             <section className="mt-12">
-              <DividerLorenzo />
+              <h4 className="text-2xl py-4 px-2">Lo nuevo de Nike</h4>
+              <ProductSection />
             </section>
-            <section className="mt-12">
-              <h4 className="text-3xl px-4">Lo nuevo de Nike</h4>
-              <ProductCarrusel />
-            </section>
-          </div>
+            <div>
+              <DividerLooks />
+              <div className="px-4">
+                <img src='oport.webp' />
+              </div>
+              <section className="mt-12">
+                <ProductSection />
+              </section>
+            </div>
+          </ProductProvider>
+        </UserProvider>
+      </>
+    ),
+  },
+  {
+    path: "/cart",
+
+    element: (
+      <>
+        <Toaster position="top-center" />
+        <UserProvider>
+          <ProductProvider>
+            <Navbar />
+            <Cart />
+          </ProductProvider>
+        </UserProvider>
+      </>
+    ),
+  },
+  {
+    path: "/payment/success",
+
+    element: (
+      <>
+        <Toaster position="top-center" />
+        <UserProvider>
+          <ProductProvider>
+            <Navbar />
+            <PaymentSuccess />
+          </ProductProvider>
+        </UserProvider>
+      </>
+    ),
+  },
+  {
+    path: "/cart/finishForm",
+
+    element: (
+      <>
+        <Toaster position="top-center" />
+        <UserProvider>
+          <ProductProvider>
+            <Navbar />
+            <FinishForm />
+          </ProductProvider>
         </UserProvider>
       </>
     ),
@@ -76,6 +139,22 @@ const router = createHashRouter([
         <Toaster position="top-right" />
         <UserProvider>
           <Register />
+        </UserProvider>
+      </>
+    ),
+  },
+  {
+    path: "/product/:name/:id",
+
+    element: (
+      <>
+        <UserProvider>
+          <ProductProvider>
+            <Navbar />
+            <div className="max-w-[1280px] mx-auto">
+              <ProductDetail />
+            </div>
+          </ProductProvider>
         </UserProvider>
       </>
     ),

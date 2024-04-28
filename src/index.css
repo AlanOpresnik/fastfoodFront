@@ -17,3 +17,10 @@ body {
     color: black !important;
     font-size: 16px !important;
 }
+
+
+.thumb-active {
+    cursor: pointer;
+    border: 1px solid #ff0000;
+    border-color: #ff0000;
+}

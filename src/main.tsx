@@ -22,6 +22,8 @@ import DividerLooks from "./components/dividerLooks/DividerLooks.jsx";
 import PaymentSuccess from "./paymentSuccess/PaymentSuccess.jsx";
 import Cart from "./pages/Cart/Cart.jsx";
 import FinishForm from "./pages/Cart/FinishForm.jsx";
+import InicialModal from "./components/Modal/InicialModal.jsx";
+import UserPanel from "./components/UserPanel/UserPanel.jsx";
 
 const router = createHashRouter([
   {
@@ -32,6 +34,7 @@ const router = createHashRouter([
         <UserProvider>
           <ProductProvider>
             <Navbar />
+            <InicialModal />
             <App />
             <div className="max-w-[1550px] px-4 mx-auto">
               <div className="mt-12 text-center p-4">
@@ -153,6 +156,23 @@ const router = createHashRouter([
             <Navbar />
             <div className="max-w-[1280px] mx-auto">
               <ProductDetail />
+            </div>
+          </ProductProvider>
+        </UserProvider>
+      </>
+    ),
+  },
+  {
+    path: "/user/panel",
+
+    element: (
+      <>
+        <UserProvider>
+          <ProductProvider>
+            <Toaster position="top-right" />
+            <Navbar />
+            <div className="max-w-[1280px] mx-auto">
+              <UserPanel />
             </div>
           </ProductProvider>
         </UserProvider>

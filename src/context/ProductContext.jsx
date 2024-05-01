@@ -35,7 +35,6 @@ export const ProductProvider = ({ children }) => {
       console.log(error)
     }
   }
-
   const createPreference = async (price, products, formData) => {
     try {
       const res = await axios.post('https://zapatillasapi.site/mp/create_preference', {
@@ -61,7 +60,7 @@ export const ProductProvider = ({ children }) => {
     }
   }
 
-  const handleBuy = async (e,price, products, formData) => {
+  const handleBuy = async (e, price, products, formData) => {
     e.preventDefault()
     const id = await createPreference(price, products, formData)
     if (id) {

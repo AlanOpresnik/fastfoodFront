@@ -7,6 +7,7 @@ import { UserContext } from '../../../context/UserContext';
 const ProductDetailInfoSide = ({ product }) => {
     const [active, setActive] = useState(0);
     const [talla, setTalla] = useState(2);
+    
     const { addToCart } = useContext(UserContext)
     const [isButtonVisible, setIsButtonVisible] = useState(false);
 
@@ -30,6 +31,7 @@ const ProductDetailInfoSide = ({ product }) => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
+
 
 
 

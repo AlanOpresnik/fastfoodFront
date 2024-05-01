@@ -7,7 +7,8 @@ export const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [userId, setUserId] = useState('');
   const [cart, setCart] = useState([]);
-
+  const [name, setName] = useState("")
+  const [user, setUser] = useState([])
   const token = localStorage.getItem("token");
 
   if (token !== undefined && token !== null && token !== "") {
@@ -20,6 +21,14 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     if (userId && userId.userId) {
       getUserCart();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (token != "" || token != undefined) {
+      const name = localStorage.getItem("name");
+      setName(name);
+      console.log(name);
     }
   }, []);
 
@@ -77,7 +86,7 @@ export const UserProvider = ({ children }) => {
         localStorage.setItem("name", res.data.name); //TODO ponder el name
         toast.success("Usuario ingresado con exito");
         setTimeout(() => {
-          window.location.href = "/";
+          window.location.href = "/#/";
         }, 2000);
       }
     } catch (error) {
@@ -97,7 +106,7 @@ export const UserProvider = ({ children }) => {
     try {
       const res = await axios.get(`https://zapatillasapi.site/api/auth/getUserById/${userId.userId}`)
       setCart(res.data.cart)
-
+      setUser(res.data)
     }
     catch (error) {
       console.log(error)
@@ -143,9 +152,30 @@ export const UserProvider = ({ children }) => {
   }
 
 
+  const updateUser = async (updatedData) => {
+    try {
+      const res = await axios.put(
+        ` ${import.meta.env.VITE_API_UPDATE_USER}/${userId.userId}`,
+        updatedData
+      );
+      setUser(res.data)
+      if (res.status == 200) {
+        toast.success("Usuario actualizado con exito");
+        localStorage.setItem("name", res.data.name);
+
+      }
+    } catch (error) {
+      toast.error("Error al actualizar el usuario");
+    }
+
+  }
+
+  
+
+
   return (
     <UserContext.Provider
-      value={{ LoginUser, handleLogin, CreateUser, handleRegister, getUserCart, cart, addToCart, userId, removeFromCart }}
+      value={{ LoginUser, handleLogin, CreateUser, handleRegister, getUserCart, cart, addToCart, userId, removeFromCart, token, name, user, updateUser }}
     >
       {children}
     </UserContext.Provider>

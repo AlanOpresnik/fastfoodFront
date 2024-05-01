@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 import { MenuIcon, SearchIcon, ShoppingBagIcon } from "lucide-react";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { Link } from "react-router-dom";
 import SwiperNavbar from "./Swiper/SwiperNavbar";
 import DrawerNavb from "../Drawer/DrawerNavb";
@@ -13,8 +13,11 @@ import { Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { UserContext } from "../../context/UserContext";
+import { formatUrl } from '../../helpers/formatUrl';
 const Navbar = () => {
   const [mobile, setisMobile] = useState(false);
+  const { user } = useContext(UserContext)
   const [name, setName] = useState("");
   const [token, setToken] = useState("")
   const [search, setSearch] = useState("")
@@ -54,17 +57,9 @@ const Navbar = () => {
   useEffect(() => {
     const handleDebouncedSearch = async () => {
       try {
-        if (debouncedSearchTerm === "") {
-          window.history.pushState({}, '', window.location.pathname);
-          return;
-        }
-
         const res = await axios.get(`https://zapatillasapi.site/api/products/search/?q=${debouncedSearchTerm}`);
-        setProductsSearch(res.data.products)
-        setShowBackdrop(true)
-
-        // Actualiza la URL con el término de búsqueda
-        window.history.pushState({}, '', `?q=${debouncedSearchTerm}`);
+        setProductsSearch(res.data.products);
+        setShowBackdrop(true);
       } catch (error) {
         console.log(error);
       }
@@ -72,6 +67,8 @@ const Navbar = () => {
 
     handleDebouncedSearch();
   }, [debouncedSearchTerm]);
+
+
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
@@ -88,6 +85,8 @@ const Navbar = () => {
   const toggleInputWidth = () => {
     setIsActive(true);
   };
+
+
 
 
   return (
@@ -107,10 +106,10 @@ const Navbar = () => {
           <ul className="flex text-xs text-black font-semibold items-center">
 
             {token != null && token != "" ? (
-              <div className="flex cursor-pointer items-center">
+              <Link to={'/user/panel'} className="flex cursor-pointer items-center">
                 <PersonOutlineRounded fontSize="small" />
-                <p className="mr-3 border-r cursor-pointer border-black pr-3">Hola, {name}</p> {/*todo: hacer el panel de cuenta*/}
-              </div>
+                <p className="mr-3 border-r cursor-pointer border-black pr-3">Hola, {user.name}</p> {/*todo: hacer el panel de cuenta*/}
+              </Link>
 
             ) : (
               <>
@@ -244,13 +243,13 @@ const Navbar = () => {
             >
               {productsSearch?.map(product => (
                 <SwiperSlide className="w-full flex ">
-                  <div className="">
+                  <Link to={`/product/${formatUrl(product.title)}/${product._id}`} className="">
                     <img className="w-[200px]" src={product.images[0].secure_url} />
                     <span className="font-semibold text-[#FB7633]">{product.isNewProduct ? "Lo nuevo" : ""}</span>
                     <p className="font-semibold">{product.title}</p>
                     <p className="text-sm opacity-70">{product.description}</p>
                     <p className="text-sm font-semibold">${product.price}</p>
-                  </div>
+                  </Link>
                 </SwiperSlide>
               ))}
             </Swiper>

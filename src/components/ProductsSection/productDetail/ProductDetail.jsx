@@ -19,6 +19,12 @@ import { UserContext } from '../../../context/UserContext';
 const ProductDetail = () => {
     const params = useParams();
     const { product, getProductById, loading } = useContext(ProductContext);
+    const { id } = useParams()
+    
+    // Hacer una solicitud cuando cambie el ID en la URL
+    useEffect(() => {
+        getProductById(id);
+    }, [id]);
     const [activeThumb, setActiveThumb] = useState();
 
  
@@ -30,6 +36,8 @@ const ProductDetail = () => {
     if (loading || !product) {
         return <div>Loading...</div>;
     }
+
+    
 
     return (
         <div className='flex-col md:flex-row flex mt-2'>

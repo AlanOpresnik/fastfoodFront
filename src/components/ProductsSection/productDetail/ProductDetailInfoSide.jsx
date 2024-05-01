@@ -7,31 +7,41 @@ import { UserContext } from '../../../context/UserContext';
 const ProductDetailInfoSide = ({ product }) => {
     const [active, setActive] = useState(0);
     const [talla, setTalla] = useState(2);
-    
-    const { addToCart } = useContext(UserContext)
+    const { addToCart } = useContext(UserContext);
     const [isButtonVisible, setIsButtonVisible] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
-        function handleScroll() {
-            // Calculate the scroll position
+        // Función para manejar el evento de touchmove en dispositivos móviles
+        function handleTouchMove() {
             const scrollPosition = window.scrollY || document.documentElement.scrollTop;
-
-            // Define a threshold value for when to show the button
-            const threshold = 30; // Adjust as needed
-
-            // Update the visibility state based on the scroll position
+            const threshold = 30;
             setIsButtonVisible(scrollPosition > threshold);
         }
 
-        // Add event listener to track scroll events
-        window.addEventListener('scroll', handleScroll);
+        // Verificar si es un dispositivo móvil
+        const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        setIsMobile(isMobileDevice);
 
-        // Remove event listener on component unmount
+        // Agregar event listener para el evento de touchmove
+        if (isMobileDevice) {
+            window.addEventListener('touchmove', handleTouchMove);
+        } else {
+            // Agregar event listener para el evento de scroll en dispositivos no móviles
+            function handleScroll() {
+                const scrollPosition = window.scrollY || document.documentElement.scrollTop;
+                const threshold = 30;
+                setIsButtonVisible(scrollPosition > threshold);
+            }
+            window.addEventListener('scroll', handleScroll);
+        }
+
+    
         return () => {
-            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('touchmove', handleTouchMove);
+           
         };
     }, []);
-
 
 
 
@@ -59,13 +69,13 @@ const ProductDetailInfoSide = ({ product }) => {
                 </div>
             </div>
             <div className='mt-6 flex flex-col items-center w-full md:block'>
-                {isButtonVisible ? (
-                    <div className='bg-white !fixed flex justify-center bottom-0 p-2 w-full'>
+                {isMobile ? (
+                    <div className='bg-white fixed flex justify-center bottom-0 p-2 w-full'>
                         <Button onClick={(e) => addToCart(product._id)} className='  w-[300px] md:!relative !bg-[#111111] md:!w-[206px] lg:!w-[260px] xl:!w-[300px] !py-[0.84rem] !px-4 !rounded-full hover:!opacity-85 !font-semibold !transition-all' variant='contained'>Agregar al Carrito</Button>
                     </div>
                 ) : (
 
-                    <Button onClick={(e) => addToCart(product._id)} className='  w-[300px] md:!relative !bg-[#111111] md:!w-[206px] lg:!w-[260px] xl:!w-[300px] !py-[0.84rem] !px-4 !rounded-full hover:!opacity-85 !font-semibold !transition-all' variant='contained'>Agregar al Carrito</Button>
+                    <Button onClick={(e) => addToCart(product._id)} className='  w-[300px] md:!relative !bg-[#111111] md:!w-[206px] lg:!w-[260px] xl:!w-[300px] !py-[0.84rem] !px-4 !rounded-full hover:!opacity-85 !font-semibold !transition-all' variant='contained'>Agregar al Carrito2</Button>
 
                 )}
                 <p className=' font-semibold mt-6 text-[#fb7633]'>{product.limitedProduct ? "Producto limitado" : ""}</p>
